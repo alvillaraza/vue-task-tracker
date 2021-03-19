@@ -39,19 +39,45 @@ export default {
       this.showAddTask = !this.showAddTask;
     },
     // the "task" being passed in is from newTask in AddTask.vue
-    addTask(task) {
-      this.tasks = [...this.tasks, task];
+    async addTask(task) {
+      const res = await fetch("api/tasks", {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify(task),
+      });
+      const data = await res.json();
+
+      this.tasks = [...this.tasks, data];
     },
-    deleteTask(id) {
+    async deleteTask(id) {
       if (confirm("Are you sure?")) {
+        const res = await fetch(`api/tasks/${id}`, {
+          method: "DELETE",
+        });
         // filter grabs every task except for the id of the task you're deleting, so it returns non-deleted tasks
-        this.tasks = this.tasks.filter((task) => task.id !== id);
+        res.status === 200
+          ? (this.tasks = this.tasks.filter((task) => task.id !== id))
+          : alert("Error deleting task");
       }
     },
-    toggleReminder(id) {
+    async toggleReminder(id) {
+      const taskToToggle = await this.fetchTask(id)
+      const updatedTask = {...taskToToggle, reminder: !taskToToggle.reminder}
+
+      const res = await fetch(`api/tasks/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-type': 'application/json'
+        },
+        body: JSON.stringify(updatedTask)
+      })
+      const data = await res.json()
+
       // does the task equal the id that was passed in? if so, turn reminder into the opposite of what it was. otherwise, just return the task
       this.tasks = this.tasks.map((task) =>
-        task.id === id ? { ...task, reminder: !task.reminder } : task
+        task.id === id ? { ...task, reminder: data.reminder } : task
       );
     },
     async fetchTasks() {
@@ -70,7 +96,7 @@ export default {
     },
   },
   async created() {
-    this.tasks = await this.fetchTasks()
+    this.tasks = await this.fetchTasks();
   },
 };
 </script>

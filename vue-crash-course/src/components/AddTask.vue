@@ -42,8 +42,7 @@ export default {
       }
 
       const newTask = {
-        //   this will come up with repeating IDs, so don't do this for id in actual projects
-        id: Math.floor(Math.random() * 100000),
+        // id: id gets added by json server
         text: this.text,
         day: this.day,
         reminder: this.reminder,
