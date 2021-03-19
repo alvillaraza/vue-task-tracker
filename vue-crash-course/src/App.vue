@@ -1,9 +1,13 @@
 <template>
   <div class="container">
-    <Header @toggle-add-task="toggleAddTask" title="Task Tracker" :showAddTask="showAddTask" />
+    <Header
+      @toggle-add-task="toggleAddTask"
+      title="Task Tracker"
+      :showAddTask="showAddTask"
+    />
     <div v-show="showAddTask">
-    <AddTask @add-task="addTask" />
-  </div>
+      <AddTask @add-task="addTask" />
+    </div>
     <Tasks
       @toggle-reminder="toggleReminder"
       @delete-task="deleteTask"
@@ -27,12 +31,12 @@ export default {
   data() {
     return {
       tasks: [],
-      showAddTask: false
+      showAddTask: false,
     };
   },
   methods: {
     toggleAddTask() {
-      this.showAddTask = !this.showAddTask
+      this.showAddTask = !this.showAddTask;
     },
     // the "task" being passed in is from newTask in AddTask.vue
     addTask(task) {
@@ -50,28 +54,16 @@ export default {
         task.id === id ? { ...task, reminder: !task.reminder } : task
       );
     },
+    async fetchTasks() {
+      const res = await fetch("http://localhost:5000/tasks");
+
+      const data = await res.json();
+
+      return data;
+    },
   },
-  created() {
-    this.tasks = [
-      {
-        id: 1,
-        text: "Doctors Appt",
-        day: "March 1st at 2:30pm",
-        reminder: true,
-      },
-      {
-        id: 2,
-        text: "Meeting at School",
-        day: "March 3rd at 1:30pm",
-        reminder: true,
-      },
-      {
-        id: 3,
-        text: "Food Shopping",
-        day: "March 3rd at 11:00am",
-        reminder: false,
-      },
-    ];
+  async created() {
+    this.tasks = await this.fetchTasks()
   },
 };
 </script>
