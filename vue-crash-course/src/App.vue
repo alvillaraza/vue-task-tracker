@@ -1,47 +1,59 @@
 <template>
   <div class="container">
     <Header title="Task Tracker" />
-    <Tasks :tasks="tasks" />
+    <Tasks @toggle-reminder="toggleReminder" @delete-task="deleteTask" :tasks="tasks" />
   </div>
 </template>
 
 <script>
 import Header from "./components/Header";
-import Tasks from './components/Tasks'
+import Tasks from "./components/Tasks";
 
 export default {
   name: "App",
   components: {
     Header,
-    Tasks
+    Tasks,
   },
-  data(){
+  data() {
     return {
-      tasks: []
-    }
+      tasks: [],
+    };
   },
-  created(){
+  methods: {
+    deleteTask(id) {
+      if (confirm("Are you sure?")) {
+        // filter grabs every task except for the id of the task you're deleting, so it returns non-deleted tasks
+        this.tasks = this.tasks.filter((task) => task.id !== id);
+      }
+    },
+    toggleReminder(id){
+      // does the task equal the id that was passed in? if so, turn reminder into the opposite of what it was. otherwise, just return the task 
+      this.tasks = this.tasks.map((task) => task.id === id ? {...task, reminder: !task.reminder} : task)
+}
+  },
+  created() {
     this.tasks = [
       {
         id: 1,
-        text: 'Doctors Appt',
-        day: 'March 1st at 2:30pm',
+        text: "Doctors Appt",
+        day: "March 1st at 2:30pm",
         reminder: true,
       },
       {
         id: 2,
-        text: 'Meeting at School',
-        day: 'March 3rd at 1:30pm',
+        text: "Meeting at School",
+        day: "March 3rd at 1:30pm",
         reminder: true,
       },
       {
         id: 3,
-        text: 'Food Shopping',
-        day: 'March 3rd at 11:00am',
+        text: "Food Shopping",
+        day: "March 3rd at 11:00am",
         reminder: false,
-      }
-    ]
-  }
+      },
+    ];
+  },
 };
 </script>
 
