@@ -4,6 +4,7 @@
 
 ```
 npm install
+npm i vue-router
 ```
 
 ### Compiles and hot-reloads for development
