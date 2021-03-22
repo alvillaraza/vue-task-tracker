@@ -10,6 +10,7 @@ npm i vue-router@next
 ### Compiles and hot-reloads for development
 
 ```
+npm run backend
 npm run serve
 ```
 
